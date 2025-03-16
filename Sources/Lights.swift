@@ -1,4 +1,5 @@
 import ArgumentParser
+import Foundation
 
 @main
 struct Lights: ParsableCommand {
@@ -6,6 +7,27 @@ struct Lights: ParsableCommand {
 		abstract: "Switch between light and dark color schemes across tools",
 		subcommands: [Lights.Status.self, Lights.On.self, Lights.Off.self]
 	)
+
+	static let lightsDir = FileManager.default.homeDirectoryForCurrentUser
+		.appending(component: ".lights")
+
+	static let lightsOffDir = lightsDir.appending(components: "off")
+	static let lightsOnDir = lightsDir.appending(components: "on")
+	static let lightsCurrentLink = lightsDir.appending(components: "current")
+
+	static func ensureUserLightsTree() throws {
+		try FileManager.default.createDirectory(
+			at: Lights.lightsDir, withIntermediateDirectories: true)
+		try FileManager.default.createDirectory(
+			at: Lights.lightsOnDir,
+			withIntermediateDirectories: true)
+		try FileManager.default.createDirectory(
+			at: Lights.lightsOffDir,
+			withIntermediateDirectories: true)
+		try? FileManager.default.createSymbolicLink(
+			at: Lights.lightsCurrentLink,
+			withDestinationURL: Lights.lightsOffDir)
+	}
 }
 
 extension Lights {
@@ -14,7 +36,8 @@ extension Lights {
 			abstract: "Show the current color scheme"
 		)
 
-		func run() {
+		func run() throws {
+			try ensureUserLightsTree()
 			print("This command does nothing right now")
 		}
 	}
