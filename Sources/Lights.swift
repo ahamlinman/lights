@@ -1,19 +1,41 @@
-//
-//  Lights.swift
-//  Lights
-//
-//  Created by Alex Hamlin on 3/16/25.
-//
-
 import ArgumentParser
-import Figlet
 
 @main
-struct FigletTool: ParsableCommand {
-	@Option(help: "Specify the input")
-	public var input: String
+struct Lights: ParsableCommand {
+	static let configuration = CommandConfiguration(
+		abstract: "Switch between light and dark color schemes across tools",
+		subcommands: [Lights.Status.self, Lights.On.self, Lights.Off.self]
+	)
+}
 
-	public func run() throws {
-		Figlet.say(self.input)
+extension Lights {
+	struct Status: ParsableCommand {
+		static let configuration = CommandConfiguration(
+			abstract: "Show the current color scheme"
+		)
+
+		func run() {
+			print("This command does nothing right now")
+		}
+	}
+
+	struct On: ParsableCommand {
+		static let configuration = CommandConfiguration(
+			abstract: "Switch to the light color scheme"
+		)
+
+		func run() {
+			print("I wish I could turn the lights on for you")
+		}
+	}
+
+	struct Off: ParsableCommand {
+		static let configuration = CommandConfiguration(
+			abstract: "Switch to the dark color scheme"
+		)
+
+		func run() {
+			print("I wish I could turn the lights off for you")
+		}
 	}
 }
