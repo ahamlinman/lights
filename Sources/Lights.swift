@@ -51,13 +51,9 @@ struct Lights: ParsableCommand {
 	}
 
 	static func currentState() throws -> LightState {
-		let targetURL = URL(
-			filePath: try FileManager.default
-				.destinationOfSymbolicLink(
-					atPath: Lights.currentLink.relativePath
-				),
-			relativeTo: Lights.baseDir
-		)
+		let targetPath = try FileManager.default.destinationOfSymbolicLink(
+			atPath: Lights.currentLink.relativePath)
+		let targetURL = URL(filePath: targetPath, relativeTo: Lights.baseDir)
 		switch targetURL.lastPathComponent {
 		case "off":
 			return .off
