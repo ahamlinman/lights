@@ -5,6 +5,18 @@ enum LightState {
 	case off, on
 }
 
+enum LightsError: Error, CustomStringConvertible {
+	case badCurrentLink(target: URL)
+
+	var description: String {
+		switch self {
+		case let .badCurrentLink(target):
+			return
+				"The current lights link points to \(target.absoluteString), not a lights config directory."
+		}
+	}
+}
+
 @main
 struct Lights: ParsableCommand {
 	static let configuration = CommandConfiguration(
@@ -14,12 +26,16 @@ struct Lights: ParsableCommand {
 	)
 
 	static let baseDir = FileManager.default.homeDirectoryForCurrentUser
-		.appending(component: ".lights")
+		.appending(component: ".lights", directoryHint: .isDirectory)
 
-	static let offDir = baseDir.appending(component: "off")
-	static let onDir = baseDir.appending(component: "on")
-	static let hooksDir = baseDir.appending(component: "hooks")
-	static let currentLink = baseDir.appending(component: "current")
+	static let offDir = baseDir.appending(
+		component: "off", directoryHint: .isDirectory)
+	static let onDir = baseDir.appending(
+		component: "on", directoryHint: .isDirectory)
+	static let hooksDir = baseDir.appending(
+		component: "hooks", directoryHint: .isDirectory)
+	static let currentLink = baseDir.appending(
+		component: "current", directoryHint: .notDirectory)
 
 	static func ensureUserLightsTree() throws {
 		for dir in [
@@ -48,8 +64,7 @@ struct Lights: ParsableCommand {
 		case "on":
 			return .on
 		default:
-			// TODO: Handle this case better.
-			fatalError("Unrecognized link destination: \(targetURL)")
+			throw LightsError.badCurrentLink(target: targetURL)
 		}
 	}
 }
