@@ -8,25 +8,25 @@ struct Lights: ParsableCommand {
 		subcommands: [Lights.Status.self, Lights.On.self, Lights.Off.self]
 	)
 
-	static let lightsDir = FileManager.default.homeDirectoryForCurrentUser
+	static let baseDir = FileManager.default.homeDirectoryForCurrentUser
 		.appending(component: ".lights")
 
-	static let lightsOffDir = lightsDir.appending(components: "off")
-	static let lightsOnDir = lightsDir.appending(components: "on")
-	static let lightsCurrentLink = lightsDir.appending(components: "current")
+	static let offDir = baseDir.appending(component: "off")
+	static let onDir = baseDir.appending(component: "on")
+	static let hooksDir = baseDir.appending(component: "hooks")
+	static let currentLink = baseDir.appending(component: "current")
 
 	static func ensureUserLightsTree() throws {
-		try FileManager.default.createDirectory(
-			at: Lights.lightsDir, withIntermediateDirectories: true)
-		try FileManager.default.createDirectory(
-			at: Lights.lightsOnDir,
-			withIntermediateDirectories: true)
-		try FileManager.default.createDirectory(
-			at: Lights.lightsOffDir,
-			withIntermediateDirectories: true)
+		for dir in [
+			Lights.baseDir, Lights.offDir, Lights.onDir, Lights.hooksDir,
+		] {
+			try FileManager.default.createDirectory(
+				at: dir, withIntermediateDirectories: true)
+		}
+
 		try? FileManager.default.createSymbolicLink(
-			at: Lights.lightsCurrentLink,
-			withDestinationURL: Lights.lightsOffDir)
+			at: Lights.currentLink,
+			withDestinationURL: Lights.offDir)
 	}
 }
 
