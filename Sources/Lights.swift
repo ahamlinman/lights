@@ -1,11 +1,16 @@
 import ArgumentParser
 import Foundation
 
+enum LightState {
+	case off, on
+}
+
 @main
 struct Lights: ParsableCommand {
 	static let configuration = CommandConfiguration(
 		abstract: "Switch between light and dark color schemes across tools",
-		subcommands: [Lights.Status.self, Lights.On.self, Lights.Off.self]
+		subcommands: [Lights.Status.self, Lights.On.self, Lights.Off.self],
+		defaultSubcommand: Lights.Status.self
 	)
 
 	static let baseDir = FileManager.default.homeDirectoryForCurrentUser
@@ -28,6 +33,25 @@ struct Lights: ParsableCommand {
 			at: Lights.currentLink,
 			withDestinationURL: Lights.offDir)
 	}
+
+	static func currentState() throws -> LightState {
+		let targetURL = URL(
+			filePath: try FileManager.default
+				.destinationOfSymbolicLink(
+					atPath: Lights.currentLink.relativePath
+				),
+			relativeTo: Lights.baseDir
+		)
+		switch targetURL.lastPathComponent {
+		case "off":
+			return .off
+		case "on":
+			return .on
+		default:
+			// TODO: Handle this case better.
+			fatalError("Unrecognized link destination: \(targetURL)")
+		}
+	}
 }
 
 extension Lights {
@@ -38,7 +62,12 @@ extension Lights {
 
 		func run() throws {
 			try ensureUserLightsTree()
-			print("This command does nothing right now")
+			switch try currentState() {
+			case .off:
+				print("off")
+			case .on:
+				print("on")
+			}
 		}
 	}
 
