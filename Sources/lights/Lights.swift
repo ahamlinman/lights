@@ -1,14 +1,8 @@
 import Foundation
 
-enum Power: CustomStringConvertible {
-	case off, on
-
-	var description: String {
-		switch self {
-		case .off: return "off"
-		case .on: return "on"
-		}
-	}
+enum Power: String {
+	case off = "off"
+	case on = "on"
 }
 
 enum LightsError: Error, CustomStringConvertible {
@@ -62,10 +56,10 @@ struct Lights {
 		let targetPath = try FileManager.default.destinationOfSymbolicLink(
 			atPath: self.currentLink.relativePath)
 		let targetURL = URL(filePath: targetPath, relativeTo: self.baseDir)
-		switch targetURL.lastPathComponent {
-		case "off": return .off
-		case "on": return .on
-		default: throw LightsError.badCurrentLink(target: targetURL)
+		if let power = Power(rawValue: targetURL.lastPathComponent) {
+			return power
+		} else {
+			throw LightsError.badCurrentLink(target: targetURL)
 		}
 	}
 
