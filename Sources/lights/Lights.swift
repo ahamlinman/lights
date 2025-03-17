@@ -84,7 +84,7 @@ struct Lights {
 		try runAllHooks()
 	}
 
-	func switchCurrentLink(toNewTarget destination: URL) throws {
+	private func switchCurrentLink(toNewTarget destination: URL) throws {
 		let linkReplacementDir = try FileManager.default.url(
 			for: .itemReplacementDirectory, in: .userDomainMask,
 			appropriateFor: self.currentLink, create: true)
@@ -106,7 +106,7 @@ struct Lights {
 		}
 	}
 
-	func runAllHooks() throws {
+	private func runAllHooks() throws {
 		var failed = false
 		for hookURL in try FileManager.default.contentsOfDirectory(
 			at: self.hooksDir, includingPropertiesForKeys: nil)
