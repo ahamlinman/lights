@@ -72,14 +72,14 @@ struct Lights: ParsableCommand {
 	}
 
 	static func switchLights(to state: LightState) throws {
-		let tempLinkDir = try FileManager.default.url(
+		let tmpdirURL = try FileManager.default.url(
 			for: .itemReplacementDirectory, in: .userDomainMask,
 			appropriateFor: Lights.currentLink, create: true)
 		defer {
-			try? FileManager.default.removeItem(at: tempLinkDir)
+			try? FileManager.default.removeItem(at: tmpdirURL)
 		}
 
-		let tempLink = tempLinkDir.appending(
+		let newCurrentLink = tmpdirURL.appending(
 			component: "lights-current", directoryHint: .notDirectory)
 		let destination =
 			switch state {
@@ -87,12 +87,12 @@ struct Lights: ParsableCommand {
 			case .off: Lights.offDir
 			}
 		try FileManager.default.createSymbolicLink(
-			at: tempLink, withDestinationURL: destination)
+			at: newCurrentLink, withDestinationURL: destination)
 
 		// I can't get replaceItem[At] to do what I want here.
 		// They both complain that ~/.lights/current doesn't exist.
 		let result = rename(
-			tempLink.relativePath, Lights.currentLink.relativePath)
+			newCurrentLink.relativePath, Lights.currentLink.relativePath)
 		if result != 0 {
 			throw NSError(domain: NSPOSIXErrorDomain, code: Int(errno))
 		}
