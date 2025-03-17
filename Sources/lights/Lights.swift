@@ -1,9 +1,9 @@
 import Foundation
 
-enum Power {
+enum Power: CustomStringConvertible {
 	case off, on
 
-	var name: String {
+	var description: String {
 		switch self {
 		case .off: return "off"
 		case .on: return "on"

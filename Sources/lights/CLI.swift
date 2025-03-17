@@ -22,7 +22,7 @@ extension CLI {
 		func run() throws {
 			let lights = try Lights(baseDir: CLI.baseDir)
 			let power = try lights.power()
-			print(power.name)
+			print(power)
 		}
 	}
 
