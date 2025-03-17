@@ -25,19 +25,23 @@ struct Lights {
 
 	var offDir: URL {
 		baseDir.appending(
-			component: "off", directoryHint: .isDirectory)
+			component: "off",
+			directoryHint: .isDirectory)
 	}
 	var onDir: URL {
 		baseDir.appending(
-			component: "on", directoryHint: .isDirectory)
+			component: "on",
+			directoryHint: .isDirectory)
 	}
 	var hooksDir: URL {
 		baseDir.appending(
-			component: "hooks", directoryHint: .isDirectory)
+			component: "hooks",
+			directoryHint: .isDirectory)
 	}
 	var currentLink: URL {
 		baseDir.appending(
-			component: "current", directoryHint: .notDirectory)
+			component: "current",
+			directoryHint: .notDirectory)
 	}
 
 	init(baseDir: URL) throws {
@@ -45,12 +49,14 @@ struct Lights {
 
 		for dir in [self.baseDir, self.offDir, self.onDir, self.hooksDir] {
 			try FileManager.default.createDirectory(
-				at: dir, withIntermediateDirectories: true)
+				at: dir,
+				withIntermediateDirectories: true)
 		}
 
 		do {
 			try FileManager.default.createSymbolicLink(
-				at: self.currentLink, withDestinationURL: self.offDir)
+				at: self.currentLink,
+				withDestinationURL: self.offDir)
 		} catch let error as NSError
 			where error.domain == NSCocoaErrorDomain
 			&& error.code == NSFileWriteFileExistsError
@@ -80,21 +86,26 @@ struct Lights {
 
 	private func switchCurrentLink(toNewTarget destination: URL) throws {
 		let linkReplacementDir = try FileManager.default.url(
-			for: .itemReplacementDirectory, in: .userDomainMask,
-			appropriateFor: self.currentLink, create: true)
+			for: .itemReplacementDirectory,
+			in: .userDomainMask,
+			appropriateFor: self.currentLink,
+			create: true)
 		defer {
 			try? FileManager.default.removeItem(at: linkReplacementDir)
 		}
 
 		let newCurrentLink = linkReplacementDir.appending(
-			component: "lights-current", directoryHint: .notDirectory)
+			component: "lights-current",
+			directoryHint: .notDirectory)
 		try FileManager.default.createSymbolicLink(
-			at: newCurrentLink, withDestinationURL: destination)
+			at: newCurrentLink,
+			withDestinationURL: destination)
 
 		// I can't get replaceItem[At] to do what I want here.
 		// They both complain that ~/.lights/current doesn't exist.
 		let result = rename(
-			newCurrentLink.relativePath, self.currentLink.relativePath)
+			newCurrentLink.relativePath,
+			self.currentLink.relativePath)
 		if result != 0 {
 			throw NSError(domain: NSPOSIXErrorDomain, code: Int(errno))
 		}
