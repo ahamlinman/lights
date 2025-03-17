@@ -23,7 +23,7 @@ enum LightsError: Error, CustomStringConvertible {
 	}
 }
 
-struct Lights {
+class Lights {
 	static let baseDir = FileManager.default.homeDirectoryForCurrentUser
 		.appending(component: ".lights", directoryHint: .isDirectory)
 
@@ -36,7 +36,7 @@ struct Lights {
 	static let currentLink = baseDir.appending(
 		component: "current", directoryHint: .notDirectory)
 
-	static func ensureUserLightsTree() throws {
+	func ensureUserLightsTree() throws {
 		for dir in [
 			Lights.baseDir, Lights.offDir, Lights.onDir, Lights.hooksDir,
 		] {
@@ -49,7 +49,7 @@ struct Lights {
 			withDestinationURL: Lights.offDir)
 	}
 
-	static func currentState() throws -> LightState {
+	func currentState() throws -> LightState {
 		let targetPath = try FileManager.default.destinationOfSymbolicLink(
 			atPath: Lights.currentLink.relativePath)
 		let targetURL = URL(filePath: targetPath, relativeTo: Lights.baseDir)
@@ -63,13 +63,13 @@ struct Lights {
 		}
 	}
 
-	static func flipLights(_ state: LightState) throws {
+	func flipLights(_ state: LightState) throws {
 		try ensureUserLightsTree()
 		try switchCurrentLink(to: state)
 		try runAllHooks()
 	}
 
-	static func switchCurrentLink(to state: LightState) throws {
+	func switchCurrentLink(to state: LightState) throws {
 		let tmpdirURL = try FileManager.default.url(
 			for: .itemReplacementDirectory, in: .userDomainMask,
 			appropriateFor: Lights.currentLink, create: true)
@@ -96,7 +96,7 @@ struct Lights {
 		}
 	}
 
-	static func runAllHooks() throws {
+	func runAllHooks() throws {
 		for hookURL in try FileManager.default.contentsOfDirectory(
 			at: Lights.hooksDir, includingPropertiesForKeys: nil)
 		{

@@ -17,8 +17,9 @@ extension CLI {
 		)
 
 		func run() throws {
-			try Lights.ensureUserLightsTree()
-			let state = try Lights.currentState()
+			let lights = Lights()
+			try lights.ensureUserLightsTree()
+			let state = try lights.currentState()
 			print(state.name)
 		}
 	}
@@ -29,7 +30,8 @@ extension CLI {
 		)
 
 		func run() throws {
-			try Lights.flipLights(.on)
+			let lights = Lights()
+			try lights.flipLights(.on)
 		}
 	}
 
@@ -39,7 +41,8 @@ extension CLI {
 		)
 
 		func run() throws {
-			try Lights.flipLights(.off)
+			let lights = Lights()
+			try lights.flipLights(.off)
 		}
 	}
 }
