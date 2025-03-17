@@ -4,7 +4,7 @@ import PackageDescription
 
 let package = Package(
 	name: "Lights",
-	platforms: [.macOS("13.0")],
+	platforms: [.macOS(.v13)],
 	dependencies: [
 		.package(
 			url: "https://github.com/apple/swift-argument-parser", from: "1.5.0"
