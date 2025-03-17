@@ -63,20 +63,17 @@ struct Lights {
 			atPath: self.currentLink.relativePath)
 		let targetURL = URL(filePath: targetPath, relativeTo: self.baseDir)
 		switch targetURL.lastPathComponent {
-		case "off":
-			return .off
-		case "on":
-			return .on
-		default:
-			throw LightsError.badCurrentLink(target: targetURL)
+		case "off": return .off
+		case "on": return .on
+		default: throw LightsError.badCurrentLink(target: targetURL)
 		}
 	}
 
 	func flip(_ power: Power) throws {
 		let linkDestination =
 			switch power {
-			case .on: self.onDir
 			case .off: self.offDir
+			case .on: self.onDir
 			}
 		try switchCurrentLink(toNewTarget: linkDestination)
 		try runAllHooks()
