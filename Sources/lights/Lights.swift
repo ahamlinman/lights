@@ -75,25 +75,25 @@ struct Lights {
 	}
 
 	func flip(_ power: Power) throws {
-		try switchCurrentLink(power: power)
-		try runAllHooks()
-	}
-
-	func switchCurrentLink(power: Power) throws {
-		let tmpdirURL = try FileManager.default.url(
-			for: .itemReplacementDirectory, in: .userDomainMask,
-			appropriateFor: self.currentLink, create: true)
-		defer {
-			try? FileManager.default.removeItem(at: tmpdirURL)
-		}
-
-		let newCurrentLink = tmpdirURL.appending(
-			component: "lights-current", directoryHint: .notDirectory)
-		let destination =
+		let linkDestination =
 			switch power {
 			case .on: self.onDir
 			case .off: self.offDir
 			}
+		try switchCurrentLink(toNewTarget: linkDestination)
+		try runAllHooks()
+	}
+
+	func switchCurrentLink(toNewTarget destination: URL) throws {
+		let linkReplacementDir = try FileManager.default.url(
+			for: .itemReplacementDirectory, in: .userDomainMask,
+			appropriateFor: self.currentLink, create: true)
+		defer {
+			try? FileManager.default.removeItem(at: linkReplacementDir)
+		}
+
+		let newCurrentLink = linkReplacementDir.appending(
+			component: "lights-current", directoryHint: .notDirectory)
 		try FileManager.default.createSymbolicLink(
 			at: newCurrentLink, withDestinationURL: destination)
 
