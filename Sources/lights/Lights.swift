@@ -47,9 +47,11 @@ struct Lights {
 			try FileManager.default.createDirectory(
 				at: dir, withIntermediateDirectories: true)
 		}
-
-		try? FileManager.default.createSymbolicLink(
-			at: self.currentLink, withDestinationURL: self.offDir)
+		
+		if !FileManager.default.fileExists(atPath: self.currentLink.relativePath) {
+			try FileManager.default.createSymbolicLink(
+				at: self.currentLink, withDestinationURL: self.offDir)
+		}
 	}
 
 	func power() throws -> Power {
