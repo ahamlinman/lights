@@ -1,6 +1,6 @@
 import Foundation
 
-enum LightState {
+enum Power {
 	case off, on
 
 	var name: String {
@@ -13,12 +13,15 @@ enum LightState {
 
 enum LightsError: Error, CustomStringConvertible {
 	case badCurrentLink(target: URL)
+	case someHooksFailed
 
 	var description: String {
 		switch self {
 		case let .badCurrentLink(target):
 			return
 				"The current lights link points to \(target.absoluteString), not a lights config directory."
+		case .someHooksFailed:
+			return "Failed to invoke some hooks."
 		}
 	}
 }
@@ -57,7 +60,7 @@ struct Lights {
 			at: self.currentLink, withDestinationURL: self.offDir)
 	}
 
-	func state() throws -> LightState {
+	func state() throws -> Power {
 		let targetPath = try FileManager.default.destinationOfSymbolicLink(
 			atPath: self.currentLink.relativePath)
 		let targetURL = URL(filePath: targetPath, relativeTo: self.baseDir)
@@ -71,12 +74,12 @@ struct Lights {
 		}
 	}
 
-	func flip(_ state: LightState) throws {
+	func flip(_ state: Power) throws {
 		try switchCurrentLink(to: state)
 		try runAllHooks()
 	}
 
-	func switchCurrentLink(to state: LightState) throws {
+	func switchCurrentLink(to state: Power) throws {
 		let tmpdirURL = try FileManager.default.url(
 			for: .itemReplacementDirectory, in: .userDomainMask,
 			appropriateFor: self.currentLink, create: true)
@@ -104,16 +107,19 @@ struct Lights {
 	}
 
 	func runAllHooks() throws {
+		var failed = false
 		for hookURL in try FileManager.default.contentsOfDirectory(
 			at: self.hooksDir, includingPropertiesForKeys: nil)
 		{
 			do {
-				try Process.run(hookURL, arguments: [])
-				// TODO: Maybe I should set the output to /dev/null?
+				try Process.run(hookURL, arguments: [])  // TODO: Output to /dev/null?
 			} catch let err {
-				print("Hook failed: \(err.localizedDescription)")
-				// TODO: lights should exit with code 1 if any of these fail.
+				fputs("Hook Error: \(err.localizedDescription)\n", stderr)
+				failed = true
 			}
+		}
+		if failed {
+			throw LightsError.someHooksFailed
 		}
 	}
 }
