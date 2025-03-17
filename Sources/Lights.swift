@@ -71,7 +71,13 @@ struct Lights: ParsableCommand {
 		}
 	}
 
-	static func switchLights(to state: LightState) throws {
+	static func flipLights(_ state: LightState) throws {
+		try ensureUserLightsTree()
+		try switchCurrentLink(to: state)
+		try runAllHooks()
+	}
+
+	static func switchCurrentLink(to state: LightState) throws {
 		let tmpdirURL = try FileManager.default.url(
 			for: .itemReplacementDirectory, in: .userDomainMask,
 			appropriateFor: Lights.currentLink, create: true)
@@ -132,8 +138,7 @@ extension Lights {
 		)
 
 		func run() throws {
-			try switchLights(to: .on)
-			try runAllHooks()
+			try flipLights(.on)
 		}
 	}
 
@@ -143,8 +148,7 @@ extension Lights {
 		)
 
 		func run() throws {
-			try switchLights(to: .off)
-			try runAllHooks()
+			try flipLights(.off)
 		}
 	}
 }
