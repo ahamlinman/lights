@@ -8,6 +8,9 @@ struct CLI: ParsableCommand {
 		subcommands: [CLI.Status.self, CLI.On.self, CLI.Off.self],
 		defaultSubcommand: CLI.Status.self
 	)
+
+	static let baseDir = FileManager.default.homeDirectoryForCurrentUser
+		.appending(component: ".lights", directoryHint: .isDirectory)
 }
 
 extension CLI {
@@ -17,7 +20,7 @@ extension CLI {
 		)
 
 		func run() throws {
-			let lights = try Lights()
+			let lights = try Lights(baseDir: CLI.baseDir)
 			let state = try lights.currentState()
 			print(state.name)
 		}
@@ -29,7 +32,7 @@ extension CLI {
 		)
 
 		func run() throws {
-			let lights = try Lights()
+			let lights = try Lights(baseDir: CLI.baseDir)
 			try lights.flipLights(.on)
 		}
 	}
@@ -40,7 +43,7 @@ extension CLI {
 		)
 
 		func run() throws {
-			let lights = try Lights()
+			let lights = try Lights(baseDir: CLI.baseDir)
 			try lights.flipLights(.off)
 		}
 	}

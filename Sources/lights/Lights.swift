@@ -23,36 +23,44 @@ enum LightsError: Error, CustomStringConvertible {
 	}
 }
 
-class Lights {
-	static let baseDir = FileManager.default.homeDirectoryForCurrentUser
-		.appending(component: ".lights", directoryHint: .isDirectory)
+struct Lights {
+	let baseDir: URL
 
-	static let offDir = baseDir.appending(
-		component: "off", directoryHint: .isDirectory)
-	static let onDir = baseDir.appending(
-		component: "on", directoryHint: .isDirectory)
-	static let hooksDir = baseDir.appending(
-		component: "hooks", directoryHint: .isDirectory)
-	static let currentLink = baseDir.appending(
-		component: "current", directoryHint: .notDirectory)
+	var offDir: URL {
+		baseDir.appending(
+			component: "off", directoryHint: .isDirectory)
+	}
+	var onDir: URL {
+		baseDir.appending(
+			component: "on", directoryHint: .isDirectory)
+	}
+	var hooksDir: URL {
+		baseDir.appending(
+			component: "hooks", directoryHint: .isDirectory)
+	}
+	var currentLink: URL {
+		baseDir.appending(
+			component: "current", directoryHint: .notDirectory)
+	}
 
-	init() throws {
+	init(baseDir: URL) throws {
+		self.baseDir = baseDir
+
 		for dir in [
-			Lights.baseDir, Lights.offDir, Lights.onDir, Lights.hooksDir,
+			self.baseDir, self.offDir, self.onDir, self.hooksDir,
 		] {
 			try FileManager.default.createDirectory(
 				at: dir, withIntermediateDirectories: true)
 		}
 
 		try? FileManager.default.createSymbolicLink(
-			at: Lights.currentLink,
-			withDestinationURL: Lights.offDir)
+			at: self.currentLink, withDestinationURL: self.offDir)
 	}
 
 	func currentState() throws -> LightState {
 		let targetPath = try FileManager.default.destinationOfSymbolicLink(
-			atPath: Lights.currentLink.relativePath)
-		let targetURL = URL(filePath: targetPath, relativeTo: Lights.baseDir)
+			atPath: self.currentLink.relativePath)
+		let targetURL = URL(filePath: targetPath, relativeTo: self.baseDir)
 		switch targetURL.lastPathComponent {
 		case "off":
 			return .off
@@ -71,7 +79,7 @@ class Lights {
 	func switchCurrentLink(to state: LightState) throws {
 		let tmpdirURL = try FileManager.default.url(
 			for: .itemReplacementDirectory, in: .userDomainMask,
-			appropriateFor: Lights.currentLink, create: true)
+			appropriateFor: self.currentLink, create: true)
 		defer {
 			try? FileManager.default.removeItem(at: tmpdirURL)
 		}
@@ -80,8 +88,8 @@ class Lights {
 			component: "lights-current", directoryHint: .notDirectory)
 		let destination =
 			switch state {
-			case .on: Lights.onDir
-			case .off: Lights.offDir
+			case .on: self.onDir
+			case .off: self.offDir
 			}
 		try FileManager.default.createSymbolicLink(
 			at: newCurrentLink, withDestinationURL: destination)
@@ -89,7 +97,7 @@ class Lights {
 		// I can't get replaceItem[At] to do what I want here.
 		// They both complain that ~/.lights/current doesn't exist.
 		let result = rename(
-			newCurrentLink.relativePath, Lights.currentLink.relativePath)
+			newCurrentLink.relativePath, self.currentLink.relativePath)
 		if result != 0 {
 			throw NSError(domain: NSPOSIXErrorDomain, code: Int(errno))
 		}
@@ -97,7 +105,7 @@ class Lights {
 
 	func runAllHooks() throws {
 		for hookURL in try FileManager.default.contentsOfDirectory(
-			at: Lights.hooksDir, includingPropertiesForKeys: nil)
+			at: self.hooksDir, includingPropertiesForKeys: nil)
 		{
 			do {
 				try Process.run(hookURL, arguments: [])
