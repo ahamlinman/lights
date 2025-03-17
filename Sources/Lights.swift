@@ -27,7 +27,7 @@ enum LightsError: Error, CustomStringConvertible {
 @main
 struct Lights: ParsableCommand {
 	static let configuration = CommandConfiguration(
-		abstract: "Switch between light and dark color schemes across tools",
+		abstract: "Switch between light and dark color schemes",
 		subcommands: [Lights.Status.self, Lights.On.self, Lights.Off.self],
 		defaultSubcommand: Lights.Status.self
 	)
