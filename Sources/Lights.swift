@@ -3,6 +3,13 @@ import Foundation
 
 enum LightState {
 	case off, on
+
+	var name: String {
+		switch self {
+		case .off: return "off"
+		case .on: return "on"
+		}
+	}
 }
 
 enum LightsError: Error, CustomStringConvertible {
@@ -63,6 +70,31 @@ struct Lights: ParsableCommand {
 			throw LightsError.badCurrentLink(target: targetURL)
 		}
 	}
+
+	static func switchLights(to state: LightState) throws {
+		let tempLinkDir = try FileManager.default.url(
+			for: .itemReplacementDirectory, in: .userDomainMask,
+			appropriateFor: Lights.currentLink, create: true)
+		defer {
+			try? FileManager.default.removeItem(at: tempLinkDir)
+		}
+
+		let tempLink = tempLinkDir.appending(
+			component: "lights-current", directoryHint: .notDirectory)
+		let destination =
+			switch state {
+			case .on: Lights.onDir
+			case .off: Lights.offDir
+			}
+		try FileManager.default.createSymbolicLink(
+			at: tempLink, withDestinationURL: destination)
+
+		try FileManager.default.replaceItem(
+			at: Lights.currentLink, withItemAt: tempLink,
+			backupItemName: nil,
+			options: .usingNewMetadataOnly,
+			resultingItemURL: nil)
+	}
 }
 
 extension Lights {
@@ -73,12 +105,8 @@ extension Lights {
 
 		func run() throws {
 			try ensureUserLightsTree()
-			switch try currentState() {
-			case .off:
-				print("off")
-			case .on:
-				print("on")
-			}
+			let state = try currentState()
+			print(state.name)
 		}
 	}
 
@@ -87,8 +115,8 @@ extension Lights {
 			abstract: "Switch to the light color scheme"
 		)
 
-		func run() {
-			print("I wish I could turn the lights on for you")
+		func run() throws {
+			try switchLights(to: .on)
 		}
 	}
 
@@ -97,8 +125,8 @@ extension Lights {
 			abstract: "Switch to the dark color scheme"
 		)
 
-		func run() {
-			print("I wish I could turn the lights off for you")
+		func run() throws {
+			try switchLights(to: .off)
 		}
 	}
 }
