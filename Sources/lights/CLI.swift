@@ -21,7 +21,7 @@ extension CLI {
 
 		func run() throws {
 			let lights = try Lights(baseDir: CLI.baseDir)
-			let state = try lights.currentState()
+			let state = try lights.state()
 			print(state.name)
 		}
 	}
@@ -33,7 +33,7 @@ extension CLI {
 
 		func run() throws {
 			let lights = try Lights(baseDir: CLI.baseDir)
-			try lights.flipLights(.on)
+			try lights.flip(.on)
 		}
 	}
 
@@ -44,7 +44,7 @@ extension CLI {
 
 		func run() throws {
 			let lights = try Lights(baseDir: CLI.baseDir)
-			try lights.flipLights(.off)
+			try lights.flip(.off)
 		}
 	}
 }

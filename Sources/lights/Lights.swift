@@ -57,7 +57,7 @@ struct Lights {
 			at: self.currentLink, withDestinationURL: self.offDir)
 	}
 
-	func currentState() throws -> LightState {
+	func state() throws -> LightState {
 		let targetPath = try FileManager.default.destinationOfSymbolicLink(
 			atPath: self.currentLink.relativePath)
 		let targetURL = URL(filePath: targetPath, relativeTo: self.baseDir)
@@ -71,7 +71,7 @@ struct Lights {
 		}
 	}
 
-	func flipLights(_ state: LightState) throws {
+	func flip(_ state: LightState) throws {
 		try switchCurrentLink(to: state)
 		try runAllHooks()
 	}
