@@ -47,11 +47,14 @@ struct Lights {
 			try FileManager.default.createDirectory(
 				at: dir, withIntermediateDirectories: true)
 		}
-		
-		if !FileManager.default.fileExists(atPath: self.currentLink.relativePath) {
+
+		do {
 			try FileManager.default.createSymbolicLink(
 				at: self.currentLink, withDestinationURL: self.offDir)
-		}
+		} catch let error as NSError
+			where error.domain == NSCocoaErrorDomain
+			&& error.code == NSFileWriteFileExistsError
+		{}
 	}
 
 	func power() throws -> Power {
