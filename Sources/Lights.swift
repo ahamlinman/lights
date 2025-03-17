@@ -89,6 +89,8 @@ struct Lights: ParsableCommand {
 		try FileManager.default.createSymbolicLink(
 			at: tempLink, withDestinationURL: destination)
 
+		// I can't get replaceItem[At] to do what I want here.
+		// They both complain that ~/.lights/current doesn't exist.
 		let result = rename(
 			tempLink.relativePath, Lights.currentLink.relativePath)
 		if result != 0 {
