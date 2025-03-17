@@ -36,7 +36,7 @@ class Lights {
 	static let currentLink = baseDir.appending(
 		component: "current", directoryHint: .notDirectory)
 
-	func ensureUserLightsTree() throws {
+	init() throws {
 		for dir in [
 			Lights.baseDir, Lights.offDir, Lights.onDir, Lights.hooksDir,
 		] {
@@ -64,7 +64,6 @@ class Lights {
 	}
 
 	func flipLights(_ state: LightState) throws {
-		try ensureUserLightsTree()
 		try switchCurrentLink(to: state)
 		try runAllHooks()
 	}
