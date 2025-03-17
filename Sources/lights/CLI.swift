@@ -21,8 +21,8 @@ extension CLI {
 
 		func run() throws {
 			let lights = try Lights(baseDir: CLI.baseDir)
-			let state = try lights.state()
-			print(state.name)
+			let power = try lights.power()
+			print(power.name)
 		}
 	}
 

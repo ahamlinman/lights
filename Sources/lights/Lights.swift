@@ -60,7 +60,7 @@ struct Lights {
 			at: self.currentLink, withDestinationURL: self.offDir)
 	}
 
-	func state() throws -> Power {
+	func power() throws -> Power {
 		let targetPath = try FileManager.default.destinationOfSymbolicLink(
 			atPath: self.currentLink.relativePath)
 		let targetURL = URL(filePath: targetPath, relativeTo: self.baseDir)
@@ -74,12 +74,12 @@ struct Lights {
 		}
 	}
 
-	func flip(_ state: Power) throws {
-		try switchCurrentLink(to: state)
+	func flip(_ power: Power) throws {
+		try switchCurrentLink(power: power)
 		try runAllHooks()
 	}
 
-	func switchCurrentLink(to state: Power) throws {
+	func switchCurrentLink(power: Power) throws {
 		let tmpdirURL = try FileManager.default.url(
 			for: .itemReplacementDirectory, in: .userDomainMask,
 			appropriateFor: self.currentLink, create: true)
@@ -90,7 +90,7 @@ struct Lights {
 		let newCurrentLink = tmpdirURL.appending(
 			component: "lights-current", directoryHint: .notDirectory)
 		let destination =
-			switch state {
+			switch power {
 			case .on: self.onDir
 			case .off: self.offDir
 			}
