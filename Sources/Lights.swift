@@ -104,8 +104,10 @@ struct Lights: ParsableCommand {
 		{
 			do {
 				try Process.run(hookURL, arguments: [])
+				// TODO: Maybe I should set the output to /dev/null?
 			} catch let err {
 				print("Hook failed: \(err.localizedDescription)")
+				// TODO: lights should exit with code 1 if any of these fail.
 			}
 		}
 	}
