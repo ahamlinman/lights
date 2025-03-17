@@ -64,13 +64,11 @@ struct Lights {
 	}
 
 	func power() throws -> Power {
-		let targetPath = try FileManager.default.destinationOfSymbolicLink(
-			atPath: self.currentLink.relativePath)
-		let targetURL = URL(filePath: targetPath, relativeTo: self.baseDir)
-		if let power = Power(rawValue: targetURL.lastPathComponent) {
+		let target = self.currentLink.resolvingSymlinksInPath()
+		if let power = Power(rawValue: target.lastPathComponent) {
 			return power
 		} else {
-			throw LightsError.badCurrentLink(target: targetURL)
+			throw LightsError.badCurrentLink(target: target)
 		}
 	}
 
