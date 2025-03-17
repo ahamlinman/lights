@@ -97,6 +97,18 @@ struct Lights: ParsableCommand {
 			throw NSError(domain: NSPOSIXErrorDomain, code: Int(errno))
 		}
 	}
+
+	static func runAllHooks() throws {
+		for hookURL in try FileManager.default.contentsOfDirectory(
+			at: Lights.hooksDir, includingPropertiesForKeys: nil)
+		{
+			do {
+				try Process.run(hookURL, arguments: [])
+			} catch let err {
+				print("Hook failed: \(err.localizedDescription)")
+			}
+		}
+	}
 }
 
 extension Lights {
@@ -119,6 +131,7 @@ extension Lights {
 
 		func run() throws {
 			try switchLights(to: .on)
+			try runAllHooks()
 		}
 	}
 
@@ -129,6 +142,7 @@ extension Lights {
 
 		func run() throws {
 			try switchLights(to: .off)
+			try runAllHooks()
 		}
 	}
 }
