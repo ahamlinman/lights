@@ -89,13 +89,10 @@ struct Lights: ParsableCommand {
 		try FileManager.default.createSymbolicLink(
 			at: tempLink, withDestinationURL: destination)
 
-		do {
-			let _ = try FileManager.default.replaceItemAt(
-				Lights.currentLink, withItemAt: tempLink,
-				options: .usingNewMetadataOnly)
-		} catch let exc {
-			debugPrint(exc)
-			throw exc
+		let result = rename(
+			tempLink.relativePath, Lights.currentLink.relativePath)
+		if result != 0 {
+			throw NSError(domain: NSPOSIXErrorDomain, code: Int(errno))
 		}
 	}
 }
