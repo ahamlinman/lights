@@ -49,9 +49,7 @@ struct Lights {
 	init(baseDir: URL) throws {
 		self.baseDir = baseDir
 
-		for dir in [
-			self.baseDir, self.offDir, self.onDir, self.hooksDir,
-		] {
+		for dir in [self.baseDir, self.offDir, self.onDir, self.hooksDir] {
 			try FileManager.default.createDirectory(
 				at: dir, withIntermediateDirectories: true)
 		}
