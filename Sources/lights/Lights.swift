@@ -13,14 +13,14 @@ enum Power {
 
 enum LightsError: Error, CustomStringConvertible {
 	case badCurrentLink(target: URL)
-	case someHooksFailed
+	case someHooksNotInvoked
 
 	var description: String {
 		switch self {
 		case let .badCurrentLink(target):
 			return
 				"The current lights link points to \(target.absoluteString), not a lights config directory."
-		case .someHooksFailed:
+		case .someHooksNotInvoked:
 			return "Failed to invoke some hooks."
 		}
 	}
@@ -107,19 +107,19 @@ struct Lights {
 	}
 
 	private func runAllHooks() throws {
-		var failed = false
+		var anyHookNotInvoked = false
 		for hookURL in try FileManager.default.contentsOfDirectory(
 			at: self.hooksDir, includingPropertiesForKeys: nil)
 		{
 			do {
 				try Process.run(hookURL, arguments: [])  // TODO: Output to /dev/null?
 			} catch let err {
-				fputs("Hook Error: \(err.localizedDescription)\n", stderr)
-				failed = true
+				fputs("Hook Not Invoked: \(err.localizedDescription)\n", stderr)
+				anyHookNotInvoked = true
 			}
 		}
-		if failed {
-			throw LightsError.someHooksFailed
+		if anyHookNotInvoked {
+			throw LightsError.someHooksNotInvoked
 		}
 	}
 }
