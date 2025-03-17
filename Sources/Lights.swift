@@ -89,11 +89,14 @@ struct Lights: ParsableCommand {
 		try FileManager.default.createSymbolicLink(
 			at: tempLink, withDestinationURL: destination)
 
-		try FileManager.default.replaceItem(
-			at: Lights.currentLink, withItemAt: tempLink,
-			backupItemName: nil,
-			options: .usingNewMetadataOnly,
-			resultingItemURL: nil)
+		do {
+			let _ = try FileManager.default.replaceItemAt(
+				Lights.currentLink, withItemAt: tempLink,
+				options: .usingNewMetadataOnly)
+		} catch let exc {
+			debugPrint(exc)
+			throw exc
+		}
 	}
 }
 
