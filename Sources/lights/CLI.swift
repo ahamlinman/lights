@@ -1,8 +1,7 @@
 import ArgumentParser
 import Foundation
 
-@main
-struct CLI: ParsableCommand {
+@main struct CLI: ParsableCommand {
 	static let configuration = CommandConfiguration(
 		abstract: "Switch between light and dark color schemes",
 		subcommands: [CLI.Status.self, CLI.On.self, CLI.Off.self],
@@ -17,9 +16,7 @@ struct CLI: ParsableCommand {
 
 extension CLI {
 	struct Status: ParsableCommand {
-		static let configuration = CommandConfiguration(
-			abstract: "Show the current color scheme"
-		)
+		static let configuration = CommandConfiguration(abstract: "Print the current color scheme")
 
 		func run() throws {
 			let lights = try Lights(baseDir: CLI.baseDir)
@@ -29,9 +26,7 @@ extension CLI {
 	}
 
 	struct On: ParsableCommand {
-		static let configuration = CommandConfiguration(
-			abstract: "Switch to the light color scheme"
-		)
+		static let configuration = CommandConfiguration(abstract: "Switch to light colors")
 
 		func run() throws {
 			let lights = try Lights(baseDir: CLI.baseDir)
@@ -40,9 +35,7 @@ extension CLI {
 	}
 
 	struct Off: ParsableCommand {
-		static let configuration = CommandConfiguration(
-			abstract: "Switch to the dark color scheme"
-		)
+		static let configuration = CommandConfiguration(abstract: "Switch to dark colors")
 
 		func run() throws {
 			let lights = try Lights(baseDir: CLI.baseDir)

@@ -1,19 +1,16 @@
 import Foundation
 
-enum Power: String {
-	case off, on
-}
+enum Power: String { case off, on }
 
 enum LightsError: Error, CustomStringConvertible {
-	case badCurrentLink(target: URL)
 	case someHooksNotInvoked
+	case badCurrentLink(target: URL)
 
 	var description: String {
 		switch self {
+		case .someHooksNotInvoked: "Failed to invoke some hooks."
 		case .badCurrentLink(let target):
 			"The current lights link points to \(target.absoluteString), not a lights config directory."
-		case .someHooksNotInvoked:
-			"Failed to invoke some hooks."
 		}
 	}
 }
@@ -21,18 +18,10 @@ enum LightsError: Error, CustomStringConvertible {
 struct Lights {
 	let baseDir: URL
 
-	var offDir: URL {
-		baseDir.appending(component: "off", directoryHint: .isDirectory)
-	}
-	var onDir: URL {
-		baseDir.appending(component: "on", directoryHint: .isDirectory)
-	}
-	var hooksDir: URL {
-		baseDir.appending(component: "hooks", directoryHint: .isDirectory)
-	}
-	var currentLink: URL {
-		baseDir.appending(component: "current", directoryHint: .notDirectory)
-	}
+	var offDir: URL { baseDir.appending(component: "off", directoryHint: .isDirectory) }
+	var onDir: URL { baseDir.appending(component: "on", directoryHint: .isDirectory) }
+	var hooksDir: URL { baseDir.appending(component: "hooks", directoryHint: .isDirectory) }
+	var currentLink: URL { baseDir.appending(component: "current", directoryHint: .notDirectory) }
 
 	init(baseDir: URL) throws {
 		self.baseDir = baseDir
@@ -72,9 +61,7 @@ struct Lights {
 			appropriateFor: currentLink,
 			create: true
 		)
-		defer {
-			try? FileManager.default.removeItem(at: linkReplacementDir)
-		}
+		defer { try? FileManager.default.removeItem(at: linkReplacementDir) }
 
 		let newCurrentLink = linkReplacementDir.appending(
 			component: "lights-current",
@@ -88,9 +75,7 @@ struct Lights {
 		// I can't get replaceItem[At] to do what I want here.
 		// They both complain that ~/.lights/current doesn't exist.
 		let result = rename(newCurrentLink.relativePath, currentLink.relativePath)
-		if result != 0 {
-			throw NSError(domain: NSPOSIXErrorDomain, code: Int(errno))
-		}
+		if result != 0 { throw NSError(domain: NSPOSIXErrorDomain, code: Int(errno)) }
 	}
 
 	private func runAllHooks() throws {
@@ -106,8 +91,6 @@ struct Lights {
 				fputs("Hook Not Invoked: \(error.localizedDescription)\n", stderr)
 			}
 		}
-		if anyHookNotInvoked {
-			throw LightsError.someHooksNotInvoked
-		}
+		if anyHookNotInvoked { throw LightsError.someHooksNotInvoked }
 	}
 }
