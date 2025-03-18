@@ -55,10 +55,7 @@ struct Lights {
 			try FileManager.default.createSymbolicLink(
 				at: currentLink,
 				withDestinationURL: offDir)
-		} catch let error as NSError
-			where error.domain == NSCocoaErrorDomain
-			&& error.code == NSFileWriteFileExistsError
-		{}
+		} catch CocoaError.fileWriteFileExists {}
 	}
 
 	func power() throws -> Power {
