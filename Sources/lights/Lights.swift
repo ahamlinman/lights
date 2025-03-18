@@ -1,8 +1,7 @@
 import Foundation
 
 enum Power: String {
-	case off = "off"
-	case on = "on"
+	case off, on
 }
 
 enum LightsError: Error, CustomStringConvertible {
