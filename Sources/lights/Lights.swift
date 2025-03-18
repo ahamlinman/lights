@@ -45,7 +45,7 @@ struct Lights {
 	init(baseDir: URL) throws {
 		self.baseDir = baseDir
 
-		for dir in [self.baseDir, self.offDir, self.onDir, self.hooksDir] {
+		for dir in [baseDir, offDir, onDir, hooksDir] {
 			try FileManager.default.createDirectory(
 				at: dir,
 				withIntermediateDirectories: true)
@@ -53,8 +53,8 @@ struct Lights {
 
 		do {
 			try FileManager.default.createSymbolicLink(
-				at: self.currentLink,
-				withDestinationURL: self.offDir)
+				at: currentLink,
+				withDestinationURL: offDir)
 		} catch let error as NSError
 			where error.domain == NSCocoaErrorDomain
 			&& error.code == NSFileWriteFileExistsError
@@ -62,7 +62,7 @@ struct Lights {
 	}
 
 	func power() throws -> Power {
-		let target = self.currentLink.resolvingSymlinksInPath()
+		let target = currentLink.resolvingSymlinksInPath()
 		if let power = Power(rawValue: target.lastPathComponent) {
 			return power
 		} else {
@@ -73,8 +73,8 @@ struct Lights {
 	func flip(_ power: Power) throws {
 		let linkDestination =
 			switch power {
-			case .off: self.offDir
-			case .on: self.onDir
+			case .off: offDir
+			case .on: onDir
 			}
 		try switchCurrentLink(toNewTarget: linkDestination)
 		try runAllHooks()
@@ -84,7 +84,7 @@ struct Lights {
 		let linkReplacementDir = try FileManager.default.url(
 			for: .itemReplacementDirectory,
 			in: .userDomainMask,
-			appropriateFor: self.currentLink,
+			appropriateFor: currentLink,
 			create: true)
 		defer {
 			try? FileManager.default.removeItem(at: linkReplacementDir)
@@ -101,7 +101,7 @@ struct Lights {
 		// They both complain that ~/.lights/current doesn't exist.
 		let result = rename(
 			newCurrentLink.relativePath,
-			self.currentLink.relativePath)
+			currentLink.relativePath)
 		if result != 0 {
 			throw NSError(domain: NSPOSIXErrorDomain, code: Int(errno))
 		}
@@ -110,7 +110,7 @@ struct Lights {
 	private func runAllHooks() throws {
 		var anyHookNotInvoked = false
 		for hookURL in try FileManager.default.contentsOfDirectory(
-			at: self.hooksDir,
+			at: hooksDir,
 			includingPropertiesForKeys: nil)
 		{
 			do {
