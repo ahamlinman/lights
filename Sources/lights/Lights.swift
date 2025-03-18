@@ -10,7 +10,7 @@ enum LightsError: Error, CustomStringConvertible {
 
 	var description: String {
 		switch self {
-		case let .badCurrentLink(target):
+		case .badCurrentLink(let target):
 			"The current lights link points to \(target.absoluteString), not a lights config directory."
 		case .someHooksNotInvoked:
 			"Failed to invoke some hooks."
