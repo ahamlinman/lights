@@ -9,8 +9,10 @@ struct CLI: ParsableCommand {
 		defaultSubcommand: CLI.Status.self
 	)
 
-	static let baseDir = FileManager.default.homeDirectoryForCurrentUser
-		.appending(component: ".lights", directoryHint: .isDirectory)
+	static let baseDir = FileManager.default.homeDirectoryForCurrentUser.appending(
+		component: ".lights",
+		directoryHint: .isDirectory
+	)
 }
 
 extension CLI {
