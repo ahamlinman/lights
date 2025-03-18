@@ -111,7 +111,8 @@ struct Lights {
 	private func runAllHooks() throws {
 		var anyHookNotInvoked = false
 		for hookURL in try FileManager.default.contentsOfDirectory(
-			at: self.hooksDir, includingPropertiesForKeys: nil)
+			at: self.hooksDir,
+			includingPropertiesForKeys: nil)
 		{
 			do {
 				try Process.run(hookURL, arguments: [])  // TODO: Output to /dev/null?
@@ -125,3 +126,4 @@ struct Lights {
 		}
 	}
 }
+
