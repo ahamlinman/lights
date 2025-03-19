@@ -12,4 +12,4 @@ reasonable contents, include them in higher-level configurations through the
 `lights` is an unstable personal project intended partly to meet my own minimal
 requirements, and partly as an excuse to learn Swift. It's currently written
 for and tested mainly on macOS, though I've managed to build it with Swift's
-static Linux SDK (producing a binary over 100 MB 😬).
+static Linux SDK (producing a binary over 140 MB in size 😬).
