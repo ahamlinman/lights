@@ -3,8 +3,8 @@ import Foundation
 
 @main struct CLI: ParsableCommand {
 	static let configuration = CommandConfiguration(
-		abstract: "Switch between light and dark color schemes",
-		subcommands: [CLI.Status.self, CLI.On.self, CLI.Off.self],
+		abstract: "Switch between dark and light color schemes",
+		subcommands: [CLI.Status.self, CLI.Off.self, CLI.On.self],
 		defaultSubcommand: CLI.Status.self
 	)
 
@@ -24,17 +24,8 @@ extension CLI {
 
 			struct NotInitializedError: Error, CustomStringConvertible {
 				let description =
-					"The lights configuration is not initialized. Run `lights on` or `lights off`."
+					"The lights configuration is not initialized. Run `lights off` or `lights on`."
 			}
-		}
-	}
-
-	struct On: ParsableCommand {
-		static let configuration = CommandConfiguration(abstract: "Switch to light colors")
-
-		func run() throws {
-			let lights = Lights(baseDir: CLI.baseDir)
-			try lights.flip(.on)
 		}
 	}
 
@@ -44,6 +35,15 @@ extension CLI {
 		func run() throws {
 			let lights = Lights(baseDir: CLI.baseDir)
 			try lights.flip(.off)
+		}
+	}
+
+	struct On: ParsableCommand {
+		static let configuration = CommandConfiguration(abstract: "Switch to light colors")
+
+		func run() throws {
+			let lights = Lights(baseDir: CLI.baseDir)
+			try lights.flip(.on)
 		}
 	}
 }
