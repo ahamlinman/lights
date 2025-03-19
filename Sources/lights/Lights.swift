@@ -85,7 +85,7 @@ struct Lights {
 			includingPropertiesForKeys: nil
 		) {
 			do {
-				try Process.run(hookURL, arguments: [])  // TODO: Output to /dev/null?
+				let _ = try Process.run(hookURL, arguments: [])  // TODO: Output to /dev/null?
 			} catch {
 				anyHookNotInvoked = true
 				fputs("Hook Not Invoked: \(error.localizedDescription)\n", stderr)
