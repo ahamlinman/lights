@@ -19,7 +19,7 @@ extension CLI {
 		static let configuration = CommandConfiguration(abstract: "Print the current color scheme")
 
 		func run() throws {
-			let lights = try Lights(baseDir: CLI.baseDir)
+			let lights = Lights(baseDir: CLI.baseDir)
 			if let power = lights.power() { print(power) } else { throw NotInitializedError() }
 		}
 	}
@@ -28,7 +28,7 @@ extension CLI {
 		static let configuration = CommandConfiguration(abstract: "Switch to light colors")
 
 		func run() throws {
-			let lights = try Lights(baseDir: CLI.baseDir)
+			let lights = Lights(baseDir: CLI.baseDir)
 			try lights.flip(.on)
 		}
 	}
@@ -37,7 +37,7 @@ extension CLI {
 		static let configuration = CommandConfiguration(abstract: "Switch to dark colors")
 
 		func run() throws {
-			let lights = try Lights(baseDir: CLI.baseDir)
+			let lights = Lights(baseDir: CLI.baseDir)
 			try lights.flip(.off)
 		}
 	}

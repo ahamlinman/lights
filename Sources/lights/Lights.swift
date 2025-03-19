@@ -23,18 +23,6 @@ struct Lights {
 	var hooksDir: URL { baseDir.appending(component: "hooks", directoryHint: .isDirectory) }
 	var currentLink: URL { baseDir.appending(component: "current", directoryHint: .notDirectory) }
 
-	init(baseDir: URL) throws {
-		self.baseDir = baseDir
-
-		for dir in [baseDir, offDir, onDir, hooksDir] {
-			try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
-		}
-
-		do {
-			try FileManager.default.createSymbolicLink(at: currentLink, withDestinationURL: offDir)
-		} catch CocoaError.fileWriteFileExists {}
-	}
-
 	func power() -> Power? {
 		Power(rawValue: currentLink.resolvingSymlinksInPath().lastPathComponent)
 	}
@@ -45,8 +33,18 @@ struct Lights {
 			case .off: offDir
 			case .on: onDir
 			}
+		try ensureConfigTreeExists()
 		try switchCurrentLink(toNewTarget: linkDestination)
 		try runAllHooks()
+	}
+
+	private func ensureConfigTreeExists() throws {
+		for dir in [baseDir, offDir, onDir, hooksDir] {
+			try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+		}
+		do {
+			try FileManager.default.createSymbolicLink(at: currentLink, withDestinationURL: offDir)
+		} catch CocoaError.fileWriteFileExists {}
 	}
 
 	private func switchCurrentLink(toNewTarget destination: URL) throws {
