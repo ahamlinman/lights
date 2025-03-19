@@ -35,13 +35,8 @@ struct Lights {
 		} catch CocoaError.fileWriteFileExists {}
 	}
 
-	func power() throws -> Power {
-		let target = currentLink.resolvingSymlinksInPath()
-		if let power = Power(rawValue: target.lastPathComponent) {
-			return power
-		} else {
-			throw LightsError.badCurrentLink(target: target)
-		}
+	func power() -> Power? {
+		Power(rawValue: currentLink.resolvingSymlinksInPath().lastPathComponent)
 	}
 
 	func flip(_ power: Power) throws {
