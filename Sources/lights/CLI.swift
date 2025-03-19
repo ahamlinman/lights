@@ -21,6 +21,11 @@ extension CLI {
 		func run() throws {
 			let lights = Lights(baseDir: CLI.baseDir)
 			if let power = lights.power() { print(power) } else { throw NotInitializedError() }
+
+			struct NotInitializedError: Error, CustomStringConvertible {
+				let description =
+					"The lights configuration is not initialized. Run `lights on` or `lights off`."
+			}
 		}
 	}
 
@@ -40,11 +45,5 @@ extension CLI {
 			let lights = Lights(baseDir: CLI.baseDir)
 			try lights.flip(.off)
 		}
-	}
-}
-
-struct NotInitializedError: Error, CustomStringConvertible {
-	var description: String {
-		"The lights configuration is not initialized. Run `lights on` or `lights off`."
 	}
 }

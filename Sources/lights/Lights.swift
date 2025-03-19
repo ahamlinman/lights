@@ -72,9 +72,9 @@ struct Lights {
 			}
 		}
 		if anyHookNotInvoked { throw HookInvocationError() }
-	}
-}
 
-struct HookInvocationError: Error, CustomStringConvertible {
-	var description: String { "Failed to invoke some hooks." }
+		struct HookInvocationError: Error, CustomStringConvertible {
+			let description = "Failed to invoke some hooks."
+		}
+	}
 }
