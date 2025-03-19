@@ -2,19 +2,6 @@ import Foundation
 
 enum Power: String { case off, on }
 
-enum LightsError: Error, CustomStringConvertible {
-	case someHooksNotInvoked
-	case badCurrentLink(target: URL)
-
-	var description: String {
-		switch self {
-		case .someHooksNotInvoked: "Failed to invoke some hooks."
-		case .badCurrentLink(let target):
-			"The current lights link points to \(target.absoluteString), not a lights config directory."
-		}
-	}
-}
-
 struct Lights {
 	let baseDir: URL
 
@@ -84,6 +71,10 @@ struct Lights {
 				fputs("Hook Not Invoked: \(error.localizedDescription)\n", stderr)
 			}
 		}
-		if anyHookNotInvoked { throw LightsError.someHooksNotInvoked }
+		if anyHookNotInvoked { throw HookInvocationError() }
 	}
+}
+
+struct HookInvocationError: Error, CustomStringConvertible {
+	var description: String { "Failed to invoke some hooks." }
 }
