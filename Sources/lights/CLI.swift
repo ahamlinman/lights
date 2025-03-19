@@ -3,6 +3,7 @@ import Foundation
 
 @main struct CLI: ParsableCommand {
 	static let configuration = CommandConfiguration(
+		commandName: "lights",
 		abstract: "Switch between dark and light color schemes",
 		subcommands: [CLI.Status.self, CLI.Off.self, CLI.On.self],
 		defaultSubcommand: CLI.Status.self
