@@ -1,3 +1,10 @@
+// See https://github.com/swiftlang/swift/issues/77866.
+// Note that we must import this first to override Foundation's import.
+// swift-format-ignore: OrderedImports
+#if canImport(Glibc)
+	@preconcurrency import Glibc
+#endif
+
 import Foundation
 
 enum Power: String { case off, on }
@@ -85,7 +92,7 @@ struct Lights {
 			includingPropertiesForKeys: nil
 		) {
 			do {
-				try Process.run(hookURL, arguments: [])  // TODO: Output to /dev/null?
+				let _ = try Process.run(hookURL, arguments: [])  // TODO: Output to /dev/null?
 			} catch {
 				anyHookNotInvoked = true
 				fputs("Hook Not Invoked: \(error.localizedDescription)\n", stderr)
