@@ -5,10 +5,12 @@ enum Power: String { case off, on }
 struct Lights {
 	let baseDir: URL
 
-	var offDir: URL { baseDir.appending(component: "off", directoryHint: .isDirectory) }
-	var onDir: URL { baseDir.appending(component: "on", directoryHint: .isDirectory) }
-	var hooksDir: URL { baseDir.appending(component: "hooks", directoryHint: .isDirectory) }
-	var currentLink: URL { baseDir.appending(component: "current", directoryHint: .notDirectory) }
+	private var offDir: URL { baseDir.appending(component: "off", directoryHint: .isDirectory) }
+	private var onDir: URL { baseDir.appending(component: "on", directoryHint: .isDirectory) }
+	private var hooksDir: URL { baseDir.appending(component: "hooks", directoryHint: .isDirectory) }
+	private var currentLink: URL {
+		baseDir.appending(component: "current", directoryHint: .notDirectory)
+	}
 
 	var power: Power? { Power(rawValue: currentLink.resolvingSymlinksInPath().lastPathComponent) }
 
