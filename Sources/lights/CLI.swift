@@ -20,7 +20,7 @@ extension CLI {
 
 		func run() throws {
 			let lights = Lights(baseDir: CLI.baseDir)
-			if let power = lights.power() { print(power) } else { throw NotInitializedError() }
+			if let power = lights.power { print(power) } else { throw NotInitializedError() }
 
 			struct NotInitializedError: Error, CustomStringConvertible {
 				let description =

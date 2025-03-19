@@ -10,9 +10,7 @@ struct Lights {
 	var hooksDir: URL { baseDir.appending(component: "hooks", directoryHint: .isDirectory) }
 	var currentLink: URL { baseDir.appending(component: "current", directoryHint: .notDirectory) }
 
-	func power() -> Power? {
-		Power(rawValue: currentLink.resolvingSymlinksInPath().lastPathComponent)
-	}
+	var power: Power? { Power(rawValue: currentLink.resolvingSymlinksInPath().lastPathComponent) }
 
 	func flip(_ power: Power) throws {
 		let linkDestination =
