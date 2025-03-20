@@ -29,9 +29,6 @@ struct Lights {
 		for dir in [baseDir, offDir, onDir, hooksDir] {
 			try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
 		}
-		do {
-			try FileManager.default.createSymbolicLink(at: currentLink, withDestinationURL: offDir)
-		} catch CocoaError.fileWriteFileExists {}
 	}
 
 	private func switchCurrentLink(toNewTarget destination: URL) throws {
