@@ -9,14 +9,18 @@ import SwiftUI
 
 	@StateObject var appearanceManager = AppearanceManager(baseDir: baseDir)
 
-	var menuSystemImage: String { appearanceManager.isDark ? "moon.stars.fill" : "sun.max.fill" }
+	var menuSystemImage: String {
+		switch appearanceManager.power {
+		case .off: "moon.stars.fill"
+		case .on: "sun.max.fill"
+		}
+	}
 
 	var body: some Scene {
 		MenuBarExtra("Lights", systemImage: menuSystemImage) {
-			if appearanceManager.isDark {
-				Button("Switch to Light Mode") { AppearanceManager.toggleSystemDarkMode() }
-			} else {
-				Button("Switch to Dark Mode") { AppearanceManager.toggleSystemDarkMode() }
+			switch appearanceManager.power {
+			case .off: Button("Switch to Light Mode") { AppearanceManager.toggleSystemDarkMode() }
+			case .on: Button("Switch to Dark Mode") { AppearanceManager.toggleSystemDarkMode() }
 			}
 			Button("Quit") { NSApp.terminate(nil) }
 		}
@@ -24,7 +28,7 @@ import SwiftUI
 }
 
 @MainActor class AppearanceManager: ObservableObject {
-	@Published var isDark: Bool = isEffectiveAppearanceDark() { didSet { reconcileLightswitch() } }
+	@Published var power: Power = effectiveAppearancePower() { didSet { reconcileLightswitch() } }
 
 	private let lightswitch: Lightswitch
 	private var observer: NSKeyValueObservation?
@@ -33,7 +37,7 @@ import SwiftUI
 		lightswitch = Lightswitch(baseDir: baseDir)
 		observer = NSApp.observe(\.effectiveAppearance) { [weak self] _, _ in
 			DispatchQueue.main.async { [weak self] in
-				self?.isDark = AppearanceManager.isEffectiveAppearanceDark()
+				self?.power = AppearanceManager.effectiveAppearancePower()
 			}
 		}
 		reconcileLightswitch()
@@ -41,7 +45,7 @@ import SwiftUI
 
 	deinit { observer?.invalidate() }
 
-	func reconcileLightswitch() { do { try lightswitch.flip(isDark ? .off : .on) } catch {} }
+	func reconcileLightswitch() { do { try lightswitch.flip(power) } catch {} }
 
 	static func toggleSystemDarkMode() {
 		let script = """
@@ -57,7 +61,11 @@ import SwiftUI
 		scriptObject.executeAndReturnError(&error)
 	}
 
-	private static func isEffectiveAppearanceDark() -> Bool {
-		NSApp.effectiveAppearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
+	private static func effectiveAppearancePower() -> Power {
+		if NSApp.effectiveAppearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua {
+			.off
+		} else {
+			.on
+		}
 	}
 }
