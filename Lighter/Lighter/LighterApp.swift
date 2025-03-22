@@ -24,7 +24,7 @@ import SwiftUI
 }
 
 @MainActor class AppearanceManager: ObservableObject {
-	@Published var isDark: Bool = isEffectiveAppearanceDark()
+	@Published var isDark: Bool = isEffectiveAppearanceDark() { didSet { reconcileLightswitch() } }
 
 	private let lightswitch: Lightswitch
 	private var observer: NSKeyValueObservation?
@@ -33,14 +33,17 @@ import SwiftUI
 		lightswitch = Lightswitch(baseDir: baseDir)
 		observer = NSApp.observe(\.effectiveAppearance) { [weak self] _, _ in
 			DispatchQueue.main.async { [weak self] in
-				let isDark = AppearanceManager.isEffectiveAppearanceDark()
-				self?.isDark = isDark
-				do { try self?.lightswitch.flip(isDark ? .off : .on) } catch { print(error) }
+				self?.isDark = AppearanceManager.isEffectiveAppearanceDark()
 			}
 		}
+		reconcileLightswitch()
 	}
 
 	deinit { observer?.invalidate() }
+
+	func reconcileLightswitch() {
+		do { try lightswitch.flip(isDark ? .off : .on) } catch { print(error) }
+	}
 
 	static func toggleSystemDarkMode() {
 		let script = """
