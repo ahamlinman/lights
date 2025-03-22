@@ -1,8 +1,8 @@
 import Foundation
 
-enum Power: String { case off, on }
+public enum Power: String { case off, on }
 
-struct Lightswitch {
+public struct Lightswitch {
 	let baseDir: URL
 
 	private var offDir: URL { baseDir.appending(component: "off", directoryHint: .isDirectory) }
@@ -12,9 +12,13 @@ struct Lightswitch {
 		baseDir.appending(component: "current", directoryHint: .notDirectory)
 	}
 
-	var power: Power? { Power(rawValue: currentLink.resolvingSymlinksInPath().lastPathComponent) }
+	public var power: Power? {
+		Power(rawValue: currentLink.resolvingSymlinksInPath().lastPathComponent)
+	}
 
-	func flip(_ power: Power) throws {
+	public init(baseDir: URL) { self.baseDir = baseDir }
+
+	public func flip(_ power: Power) throws {
 		let linkDestination =
 			switch power {
 			case .off: offDir

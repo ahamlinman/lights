@@ -1,5 +1,6 @@
 import ArgumentParser
 import Foundation
+import LightsKit
 
 @main struct CLI: ParsableCommand {
 	static let configuration = CommandConfiguration(
