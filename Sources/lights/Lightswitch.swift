@@ -2,7 +2,7 @@ import Foundation
 
 enum Power: String { case off, on }
 
-struct Lights {
+struct Lightswitch {
 	let baseDir: URL
 
 	private var offDir: URL { baseDir.appending(component: "off", directoryHint: .isDirectory) }

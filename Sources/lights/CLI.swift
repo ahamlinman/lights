@@ -20,7 +20,7 @@ extension CLI {
 		static let configuration = CommandConfiguration(abstract: "Print the current color scheme")
 
 		func run() throws {
-			let lights = Lights(baseDir: CLI.baseDir)
+			let lights = Lightswitch(baseDir: CLI.baseDir)
 			if let power = lights.power { print(power) } else { throw NotInitializedError() }
 
 			struct NotInitializedError: Error, CustomStringConvertible {
@@ -34,7 +34,7 @@ extension CLI {
 		static let configuration = CommandConfiguration(abstract: "Switch to dark colors")
 
 		func run() throws {
-			let lights = Lights(baseDir: CLI.baseDir)
+			let lights = Lightswitch(baseDir: CLI.baseDir)
 			try lights.flip(.off)
 		}
 	}
@@ -43,7 +43,7 @@ extension CLI {
 		static let configuration = CommandConfiguration(abstract: "Switch to light colors")
 
 		func run() throws {
-			let lights = Lights(baseDir: CLI.baseDir)
+			let lights = Lightswitch(baseDir: CLI.baseDir)
 			try lights.flip(.on)
 		}
 	}
