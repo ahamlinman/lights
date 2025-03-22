@@ -1,8 +1,13 @@
-import SwiftUI
 import LightsKit
+import SwiftUI
 
 @main struct LighterApp: App {
-	@StateObject var appearanceManager = AppearanceManager()
+	static let baseDir = FileManager.default.homeDirectoryForCurrentUser.appending(
+		component: ".lights",
+		directoryHint: .isDirectory
+	)
+
+	@StateObject var appearanceManager = AppearanceManager(baseDir: baseDir)
 
 	var menuSystemImage: String { appearanceManager.isDark ? "moon.stars.fill" : "sun.max.fill" }
 
@@ -21,12 +26,16 @@ import LightsKit
 @MainActor class AppearanceManager: ObservableObject {
 	@Published var isDark: Bool = isEffectiveAppearanceDark()
 
+	private let lightswitch: Lightswitch
 	private var observer: NSKeyValueObservation?
 
-	init() {
+	init(baseDir: URL) {
+		lightswitch = Lightswitch(baseDir: baseDir)
 		observer = NSApp.observe(\.effectiveAppearance) { [weak self] _, _ in
 			DispatchQueue.main.async { [weak self] in
-				self?.isDark = AppearanceManager.isEffectiveAppearanceDark()
+				let isDark = AppearanceManager.isEffectiveAppearanceDark()
+				self?.isDark = isDark
+				do { try self?.lightswitch.flip(isDark ? .off : .on) } catch { print(error) }
 			}
 		}
 	}
@@ -45,7 +54,6 @@ import LightsKit
 		let scriptObject = NSAppleScript(source: script)!
 		var error: NSDictionary?
 		scriptObject.executeAndReturnError(&error)
-		print(error as Any)
 	}
 
 	private static func isEffectiveAppearanceDark() -> Bool {
