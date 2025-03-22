@@ -11,7 +11,7 @@ let package = Package(
 	],
 	dependencies: [.package(url: "https://github.com/apple/swift-argument-parser", from: "1.5.0")],
 	targets: [
-		.target(name: "LightsKit", dependencies: []),
+		.target(name: "LightsKit", dependencies: [], path: "LightsKit"),
 		.executableTarget(
 			name: "lights",
 			dependencies: [
