@@ -1,4 +1,5 @@
 import SwiftUI
+import LightsKit
 
 @main struct LighterApp: App {
 	@StateObject var appearanceManager = AppearanceManager()

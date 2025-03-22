@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		786B8F112D8F70A1001B891B /* LightsKit in Frameworks */ = {isa = PBXBuildFile; productRef = 786B8F102D8F70A1001B891B /* LightsKit */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		786B8EEE2D8F59F4001B891B /* Lighter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Lighter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -23,6 +27,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				786B8F112D8F70A1001B891B /* LightsKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,6 +70,7 @@
 			);
 			name = Lighter;
 			packageProductDependencies = (
+				786B8F102D8F70A1001B891B /* LightsKit */,
 			);
 			productName = Lighter;
 			productReference = 786B8EEE2D8F59F4001B891B /* Lighter.app */;
@@ -94,6 +100,9 @@
 			);
 			mainGroup = 786B8EE52D8F59F4001B891B;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				786B8F0F2D8F70A1001B891B /* XCLocalSwiftPackageReference "../../lights" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 786B8EEF2D8F59F4001B891B /* Products */;
 			projectDirPath = "";
@@ -321,6 +330,20 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		786B8F0F2D8F70A1001B891B /* XCLocalSwiftPackageReference "../../lights" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../../lights;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		786B8F102D8F70A1001B891B /* LightsKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = LightsKit;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 786B8EE62D8F59F4001B891B /* Project object */;
 }
