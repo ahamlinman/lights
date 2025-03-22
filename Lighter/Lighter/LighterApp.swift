@@ -41,9 +41,7 @@ import SwiftUI
 
 	deinit { observer?.invalidate() }
 
-	func reconcileLightswitch() {
-		do { try lightswitch.flip(isDark ? .off : .on) } catch { print(error) }
-	}
+	func reconcileLightswitch() { do { try lightswitch.flip(isDark ? .off : .on) } catch {} }
 
 	static func toggleSystemDarkMode() {
 		let script = """
