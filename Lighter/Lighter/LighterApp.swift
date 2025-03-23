@@ -36,7 +36,7 @@ import SwiftUI
 	init(baseDir: URL) {
 		lightswitch = Lightswitch(baseDir: baseDir)
 		observer = NSApp.observe(\.effectiveAppearance) { [weak self] _, _ in
-			DispatchQueue.main.async { [weak self] in
+			Task { @MainActor [weak self] in
 				self?.power = AppearanceManager.effectiveAppearancePower()
 			}
 		}
