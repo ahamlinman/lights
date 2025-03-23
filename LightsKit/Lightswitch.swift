@@ -42,7 +42,9 @@ public struct Lightswitch {
 			appropriateFor: currentLink,
 			create: true
 		)
-		defer { try? FileManager.default.removeItem(at: linkReplacementDir) }
+		defer {
+			try? FileManager.default.removeItem(at: linkReplacementDir)
+		}
 
 		let newCurrentLink = linkReplacementDir.appending(
 			component: "lights-current",
@@ -56,7 +58,9 @@ public struct Lightswitch {
 		// I can't get replaceItem[At] to do what I want here.
 		// They both complain that ~/.lights/current doesn't exist.
 		let result = rename(newCurrentLink.relativePath, currentLink.relativePath)
-		if result != 0 { throw NSError(domain: NSPOSIXErrorDomain, code: Int(errno)) }
+		if result != 0 {
+			throw NSError(domain: NSPOSIXErrorDomain, code: Int(errno))
+		}
 	}
 
 	private func runAllHooks() throws {
@@ -72,9 +76,13 @@ public struct Lightswitch {
 				process.standardOutput = FileHandle.nullDevice
 				process.standardError = FileHandle.nullDevice
 				try process.run()
-			} catch { failures.append(FailedLightsHook(hookURL: hookURL, error: error)) }
+			} catch {
+				failures.append(FailedLightsHook(hookURL: hookURL, error: error))
+			}
 		}
-		if !failures.isEmpty { throw LightsHookInvocationError(failures: failures) }
+		if !failures.isEmpty {
+			throw LightsHookInvocationError(failures: failures)
+		}
 	}
 }
 
@@ -90,6 +98,7 @@ public struct LightsHookInvocationError: Error, CustomStringConvertible {
 		"Failed to invoke some hooks.\n"
 			+ failures.map { failure in
 				"\t\(failure.hookURL.lastPathComponent): \(failure.error.localizedDescription)"
-			}.joined(separator: "\n")
+			}
+			.joined(separator: "\n")
 	}
 }

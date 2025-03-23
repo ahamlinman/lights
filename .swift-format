@@ -4,6 +4,5 @@
 		"tabs": 1
 	},
 	"tabWidth": 4,
-	"respectsExistingLineBreaks": false,
 	"lineBreakBeforeEachArgument": true
 }
