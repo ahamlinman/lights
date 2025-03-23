@@ -66,7 +66,12 @@ public struct Lightswitch {
 			includingPropertiesForKeys: nil
 		) {
 			do {
-				let _ = try Process.run(hookURL, arguments: [])  // TODO: Output to /dev/null?
+				let process = Process()
+				process.executableURL = hookURL
+				process.standardInput = FileHandle.nullDevice
+				process.standardOutput = FileHandle.nullDevice
+				process.standardError = FileHandle.nullDevice
+				try process.run()
 			} catch { failures.append(FailedLightsHook(hookURL: hookURL, error: error)) }
 		}
 		if !failures.isEmpty { throw LightsHookInvocationError(failures: failures) }
