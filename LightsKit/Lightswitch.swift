@@ -60,30 +60,31 @@ public struct Lightswitch {
 	}
 
 	private func runAllHooks() throws {
-		var failures: [FailedHook] = []
+		var failures: [FailedLightsHook] = []
 		for hookURL in try FileManager.default.contentsOfDirectory(
 			at: hooksDir,
 			includingPropertiesForKeys: nil
 		) {
 			do {
 				let _ = try Process.run(hookURL, arguments: [])  // TODO: Output to /dev/null?
-			} catch { failures.append(FailedHook(hookURL: hookURL, error: error)) }
+			} catch { failures.append(FailedLightsHook(hookURL: hookURL, error: error)) }
 		}
-		if !failures.isEmpty { throw HookInvocationError(failures: failures) }
+		if !failures.isEmpty { throw LightsHookInvocationError(failures: failures) }
+	}
+}
 
-		struct FailedHook {
-			let hookURL: URL
-			let error: any Error
-		}
+public struct FailedLightsHook: Sendable {
+	public let hookURL: URL
+	public let error: any Error
+}
 
-		struct HookInvocationError: Error, CustomStringConvertible {
-			let failures: [FailedHook]
-			var description: String {
-				"Failed to invoke some hooks.\n"
-					+ failures.map { failure in
-						"\t\(failure.hookURL.lastPathComponent): \(failure.error.localizedDescription)"
-					}.joined(separator: "\n")
-			}
-		}
+public struct LightsHookInvocationError: Error, CustomStringConvertible {
+	public let failures: [FailedLightsHook]
+
+	public var description: String {
+		"Failed to invoke some hooks.\n"
+			+ failures.map { failure in
+				"\t\(failure.hookURL.lastPathComponent): \(failure.error.localizedDescription)"
+			}.joined(separator: "\n")
 	}
 }
