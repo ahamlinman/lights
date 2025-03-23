@@ -45,8 +45,6 @@ import SwiftUI
 
 	deinit { observer?.invalidate() }
 
-	func reconcileLightswitch() { do { try lightswitch.flip(power) } catch {} }
-
 	static func toggleSystemDarkMode() {
 		let script = """
 			tell application "System Events"
@@ -60,6 +58,8 @@ import SwiftUI
 		var error: NSDictionary?
 		scriptObject.executeAndReturnError(&error)
 	}
+
+	private func reconcileLightswitch() { do { try lightswitch.flip(power) } catch {} }
 
 	private static func effectiveAppearancePower() -> Power {
 		if NSApp.effectiveAppearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua {
