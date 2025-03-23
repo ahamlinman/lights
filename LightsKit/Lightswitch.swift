@@ -60,22 +60,30 @@ public struct Lightswitch {
 	}
 
 	private func runAllHooks() throws {
-		var anyHookNotInvoked = false
+		var failures: [FailedHook] = []
 		for hookURL in try FileManager.default.contentsOfDirectory(
 			at: hooksDir,
 			includingPropertiesForKeys: nil
 		) {
 			do {
 				let _ = try Process.run(hookURL, arguments: [])  // TODO: Output to /dev/null?
-			} catch {
-				anyHookNotInvoked = true
-				fputs("Hook Not Invoked: \(error.localizedDescription)\n", stderr)
-			}
+			} catch { failures.append(FailedHook(hookURL: hookURL, error: error)) }
 		}
-		if anyHookNotInvoked { throw HookInvocationError() }
+		if !failures.isEmpty { throw HookInvocationError(failures: failures) }
+
+		struct FailedHook {
+			let hookURL: URL
+			let error: any Error
+		}
 
 		struct HookInvocationError: Error, CustomStringConvertible {
-			let description = "Failed to invoke some hooks."
+			let failures: [FailedHook]
+			var description: String {
+				"Failed to invoke some hooks.\n"
+					+ failures.map { failure in
+						"\t\(failure.hookURL.lastPathComponent): \(failure.error.localizedDescription)"
+					}.joined(separator: "\n")
+			}
 		}
 	}
 }

@@ -20,9 +20,8 @@ The project provides two ways to manage this `~/.lights` setup:
   that perform the switch on demand.
 
 <sup>†</sup> I've managed to build `lights` with Swift's static Linux SDK,
-though the resulting binary is over 140 MB in size. The glibc build currently
-has issues with strict concurrency in Swift 6; future implementation work may
-naturally fix this.
+though the resulting binary is over 140 MB in size. The glibc build is smaller,
+but must dynamically link to Swift's runtime libraries.
 
 Lights is an unstable personal project intended partly to meet my own minimal
 requirements, and partly as an excuse to learn Swift and get a basic handle on
