@@ -2,14 +2,14 @@ import LightsKit
 import SwiftUI
 
 @main struct LighterApp: App {
-	static let baseDir = FileManager.default.homeDirectoryForCurrentUser.appending(
+	static private let baseDir = FileManager.default.homeDirectoryForCurrentUser.appending(
 		component: ".lights",
 		directoryHint: .isDirectory
 	)
 
-	@StateObject var appearanceManager = AppearanceManager(baseDir: baseDir)
+	@StateObject private var appearanceManager = AppearanceManager(baseDir: baseDir)
 
-	var menuSystemImage: String {
+	private var menuSystemImage: String {
 		switch appearanceManager.power {
 		case .off: "moon.stars.fill"
 		case .on: "sun.max.fill"
