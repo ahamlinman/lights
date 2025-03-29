@@ -26,3 +26,8 @@ but must dynamically link to Swift's runtime libraries.
 Lights is an unstable personal project intended partly to meet my own minimal
 requirements, and partly as an excuse to learn Swift and get a basic handle on
 development for Apple platforms.
+
+The entirety of the Lights project is marked with [CC0 1.0 Universal][CC0].
+A copy of the CC0 1.0 Universal Legal Code is available in `COPYING.txt`.
+
+[CC0]: https://creativecommons.org/publicdomain/zero/1.0/
