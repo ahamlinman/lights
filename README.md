@@ -29,5 +29,9 @@ development for Apple platforms.
 
 The entirety of the Lights project is marked with [CC0 1.0 Universal][CC0].
 A copy of the CC0 1.0 Universal Legal Code is available in `COPYING.txt`.
+Note that binary builds of software in this project may incorporate third-party
+software under non-CC0 licenses that impose requirements on the redistribution
+of those builds, and that as a distributor you are solely responsible for
+compliance with the terms of those licenses.
 
 [CC0]: https://creativecommons.org/publicdomain/zero/1.0/
